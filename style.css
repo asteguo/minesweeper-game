@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.game-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.controls {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#difficulty {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#new-game {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#new-game:hover {
+    background-color: #45a049;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(9, 30px); /* Default for easy mode */
+    gap: 1px;
+    margin: 0 auto;
+    background-color: #bdbdbd;
+    border: 3px solid #7b7b7b;
+    padding: 3px;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    background-color: #c0c0c0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid;
+    border-color: #fff #7b7b7b #7b7b7b #fff;
+}
+
+.cell.revealed {
+    background-color: #e0e0e0;
+    border: 1px solid #bdbdbd;
+}
+
+.cell.mine {
+    background-color: #ff0000;
+}
+
+.cell.flagged {
+    background-color: #c0c0c0;
+    position: relative;
+}
+
+.cell.flagged::after {
+    content: '🚩';
+    font-size: 16px;
+}
+
+/* Number colors */
+.cell[data-number="1"] { color: blue; }
+.cell[data-number="2"] { color: green; }
+.cell[data-number="3"] { color: red; }
+.cell[data-number="4"] { color: darkblue; }
+.cell[data-number="5"] { color: brown; }
+.cell[data-number="6"] { color: teal; }
+.cell[data-number="7"] { color: black; }
+.cell[data-number="8"] { color: gray; }
+
+.game-status {
+    margin-top: 20px;
+    font-weight: bold;
+    height: 24px;
+}
+
+.win-message {
+    color: green;
+}
+
+.lose-message {
+    color: red;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .board {
+        grid-template-columns: repeat(9, 25px);
+    }
+    
+    .cell {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+}
