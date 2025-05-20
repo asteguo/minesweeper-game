@@ -20,9 +20,11 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
+    max-width: 800px;
+    width: 100%;
 }
 
-h1 {
+h1, h2 {
     color: #333;
     margin-bottom: 20px;
 }
@@ -34,13 +36,13 @@ h1 {
     gap: 10px;
 }
 
-#difficulty {
+#difficulty, #history-difficulty {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
 }
 
-#new-game {
+#new-game, #clear-history {
     padding: 8px 16px;
     background-color: #4CAF50;
     color: white;
@@ -50,8 +52,16 @@ h1 {
     transition: background-color 0.3s;
 }
 
-#new-game:hover {
+#new-game:hover, #clear-history:hover {
     background-color: #45a049;
+}
+
+#clear-history {
+    background-color: #f44336;
+}
+
+#clear-history:hover {
+    background-color: #da190b;
 }
 
 .game-info {
@@ -63,7 +73,7 @@ h1 {
 
 .board {
     display: grid;
-    grid-template-columns: repeat(9, 30px); /* Default for easy mode */
+    grid-template-columns: repeat(9, 30px);
     gap: 1px;
     margin: 0 auto;
     background-color: #bdbdbd;
@@ -115,7 +125,7 @@ h1 {
 .cell[data-number="8"] { color: gray; }
 
 .game-status {
-    margin-top: 20px;
+    margin: 20px 0;
     font-weight: bold;
     height: 24px;
 }
@@ -128,6 +138,59 @@ h1 {
     color: red;
 }
 
+/* History Section Styles */
+.history-section {
+    margin-top: 30px;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+    text-align: left;
+}
+
+.history-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.history-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-item:hover {
+    background-color: #f5f5f5;
+}
+
+.history-item .difficulty {
+    font-weight: bold;
+}
+
+.history-item .time {
+    color: #666;
+}
+
+.history-item .date {
+    color: #999;
+    font-size: 0.9em;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
     .board {
@@ -138,5 +201,11 @@ h1 {
         width: 25px;
         height: 25px;
         font-size: 14px;
+    }
+
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
     }
 }
