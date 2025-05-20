@@ -29,6 +29,22 @@
         </div>
         
         <div class="game-status" id="game-status"></div>
+
+        <div class="history-section">
+            <h2>Game History</h2>
+            <div class="history-filters">
+                <select id="history-difficulty">
+                    <option value="all">All Difficulties</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+                <button id="clear-history">Clear History</button>
+            </div>
+            <div class="history-list" id="history-list">
+                <!-- History items will be added here by JavaScript -->
+            </div>
+        </div>
     </div>
     
     <script src="script.js"></script>
