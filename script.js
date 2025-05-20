@@ -25,6 +25,9 @@ const timerElement = document.getElementById('timer');
 const gameStatusElement = document.getElementById('game-status');
 const difficultySelect = document.getElementById('difficulty');
 const newGameButton = document.getElementById('new-game');
+const historyListElement = document.getElementById('history-list');
+const historyDifficultySelect = document.getElementById('history-difficulty');
+const clearHistoryButton = document.getElementById('clear-history');
 
 // Initialize the game
 function initGame(difficulty = 'easy') {
@@ -217,6 +220,9 @@ function revealCell(row, col) {
             }
         }
     }
+    
+    // Check for win after each cell reveal
+    checkWin();
 }
 
 // Reveal all mines when game is lost
@@ -230,9 +236,12 @@ function revealMines() {
 
 // Check if player has won
 function checkWin() {
+    if (gameState.gameOver) return; // Don't check if game is already over
+    
     const { rows, cols, mines } = config[gameState.difficulty];
     const totalCells = rows * cols;
     
+    // Win condition: all non-mine cells are revealed
     if (gameState.revealed === totalCells - mines) {
         endGame(true);
     }
@@ -246,6 +255,16 @@ function endGame(isWin) {
     if (isWin) {
         gameStatusElement.textContent = 'You Win! 🎉';
         gameStatusElement.className = 'game-status win-message';
+        
+        // Save game to history if won
+        saveGameToHistory({
+            difficulty: gameState.difficulty,
+            time: gameState.timer,
+            date: new Date().toISOString()
+        });
+        
+        // Update history display
+        displayGameHistory();
     } else {
         gameStatusElement.textContent = 'Game Over! 💥';
         gameStatusElement.className = 'game-status lose-message';
@@ -265,6 +284,79 @@ function getCellElement(row, col) {
     return document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
 }
 
+// Save game to history in localStorage
+function saveGameToHistory(gameData) {
+    // Get existing history or initialize empty array
+    let history = JSON.parse(localStorage.getItem('minesweeperHistory')) || [];
+    
+    // Add new game to history
+    history.push(gameData);
+    
+    // Keep only the last 50 games
+    if (history.length > 50) {
+        history = history.slice(history.length - 50);
+    }
+    
+    // Save back to localStorage
+    localStorage.setItem('minesweeperHistory', JSON.stringify(history));
+}
+
+// Display game history
+function displayGameHistory() {
+    // Clear current history display
+    historyListElement.innerHTML = '';
+    
+    // Get history from localStorage
+    const history = JSON.parse(localStorage.getItem('minesweeperHistory')) || [];
+    
+    // Get selected difficulty filter
+    const difficultyFilter = historyDifficultySelect.value;
+    
+    // Filter history based on selected difficulty
+    const filteredHistory = difficultyFilter === 'all' 
+        ? history 
+        : history.filter(game => game.difficulty === difficultyFilter);
+    
+    // Sort by date (newest first)
+    filteredHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Display each game in history
+    if (filteredHistory.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.textContent = 'No game history yet.';
+        emptyMessage.style.padding = '10px';
+        emptyMessage.style.textAlign = 'center';
+        emptyMessage.style.color = '#999';
+        historyListElement.appendChild(emptyMessage);
+    } else {
+        filteredHistory.forEach(game => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            
+            // Format difficulty (capitalize first letter)
+            const formattedDifficulty = game.difficulty.charAt(0).toUpperCase() + game.difficulty.slice(1);
+            
+            // Format date
+            const gameDate = new Date(game.date);
+            const formattedDate = `${gameDate.toLocaleDateString()} ${gameDate.toLocaleTimeString()}`;
+            
+            historyItem.innerHTML = `
+                <div class="difficulty">${formattedDifficulty}</div>
+                <div class="time">${game.time} seconds</div>
+                <div class="date">${formattedDate}</div>
+            `;
+            
+            historyListElement.appendChild(historyItem);
+        });
+    }
+}
+
+// Clear game history
+function clearGameHistory() {
+    localStorage.removeItem('minesweeperHistory');
+    displayGameHistory();
+}
+
 // Event listeners
 difficultySelect.addEventListener('change', () => {
     initGame(difficultySelect.value);
@@ -274,10 +366,16 @@ newGameButton.addEventListener('click', () => {
     initGame(difficultySelect.value);
 });
 
+historyDifficultySelect.addEventListener('change', displayGameHistory);
+
+clearHistoryButton.addEventListener('click', clearGameHistory);
+
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     initGame();
+    displayGameHistory();
 });
 
 // Initialize the game
 initGame();
+displayGameHistory();
